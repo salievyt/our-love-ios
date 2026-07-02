@@ -1,32 +1,39 @@
-//
 //  Our_LoveApp.swift
 //  Our Love
-//
-//  Created by Яхёбек on 2/7/26.
-//
 
 import SwiftUI
 import SwiftData
 
 @main
 struct Our_LoveApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+    let container: ModelContainer
+    
+    init() {
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            let schema = Schema([
+                RelationshipSettings.self,
+                ImportantDate.self,
+                SharedPhoto.self,
+                DailyTask.self,
+                QuestionOfTheDay.self,
+                MoodEntry.self,
+                DiaryEntry.self,
+                Place.self,
+                TimeCapsule.self,
+                Collage.self,
+                Item.self,
+            ])
+            let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+            container = try ModelContainer(for: schema, configurations: [config])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
-    }()
-
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(container)
     }
 }
