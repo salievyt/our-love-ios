@@ -14,5 +14,11 @@ struct Our_LoveTests {
         // Swift Testing Documentation
         // https://developer.apple.com/documentation/testing
     }
+    
+    @Test("test")
+    func num() async throws {
+        print("1" + "2")
+        
+    }
 
 }
