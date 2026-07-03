@@ -19,9 +19,11 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_16.4.app
           xcodebuild -version
 
-      - name: List available simulators
+      - name: Setup Simulator
         run: |
-          xcrun simctl list devices available | grep -i "iPhone"
+          sudo xcodebuild -runFirstLaunch
+          sleep 30
+          xcrun simctl list devices available
 
       - name: Build
         run: |
@@ -29,7 +31,7 @@ jobs:
             -project "Our Love.xcodeproj" \
             -scheme "Our Love" \
             -sdk iphonesimulator \
-            -destination "platform=iOS Simulator,name=iPhone 16" \
+            -destination "platform=iOS Simulator" \
             -configuration Release \
             build \
             CODE_SIGN_IDENTITY="-" \
@@ -43,7 +45,7 @@ jobs:
             -project "Our Love.xcodeproj" \
             -scheme "Our Love" \
             -sdk iphonesimulator \
-            -destination "platform=iOS Simulator,name=iPhone 16" \
+            -destination "platform=iOS Simulator" \
             -configuration Debug \
             test \
             -enableCodeCoverage YES \
