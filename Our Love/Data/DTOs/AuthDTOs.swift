@@ -71,9 +71,17 @@ struct RelationshipDTO: Codable {
 }
 
 struct InviteCodeResponseDTO: Codable {
-    let inviteCode: String
+    let id: String
+    let code: String
+    let isUsed: Bool
+    let createdAt: String
+    let expiresAt: String
     
     enum CodingKeys: String, CodingKey {
-        case inviteCode = "invite_code"
+        case id
+        case code
+        case isUsed = "is_used"
+        case createdAt = "created_at"
+        case expiresAt = "expires_at"
     }
 }

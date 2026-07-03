@@ -14,7 +14,10 @@ final class AlbumRepository: AlbumRepositoryProtocol {
     
     func fetchPhotos(page: Int?, yearTag: Int?, search: String?, ordering: String?) async throws -> PaginatedResponse<Photo> {
         var path = "/albums/"
-        let params = buildQueryParams(page: page, search: search, ordering: ordering)
+        var params = buildQueryParams(page: page, search: search, ordering: ordering)
+        if let yearTag = yearTag {
+            params.append("year_tag=\(yearTag)")
+        }
         if !params.isEmpty {
             path += "?" + params.joined(separator: "&")
         }

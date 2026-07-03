@@ -35,22 +35,21 @@ final class AuthRepository: AuthRepositoryProtocol {
     // MARK: - Register
     
     func register(username: String, password: String, email: String, inviteCode: String?) async throws {
+        // Step 1: Register user — backend returns user data (no tokens)
         let request = RegisterRequestDTO(
             username: username,
             password: password,
             email: email,
             inviteCode: inviteCode
         )
-        let data = try JSONEncoder().encode(request)
-        
-        let response: TokenResponseDTO = try await apiClient.request(
+        _ = try await apiClient.request(
             path: "/auth/register/",
             method: .post,
-            body: data
-        )
+            body: try JSONEncoder().encode(request)
+        ) as UserProfileDTO
         
-        apiClient.setTokens(access: response.access, refresh: response.refresh)
-        try await fetchProfile()
+        // Step 2: Login immediately to get JWT tokens
+        try await login(username: username, password: password)
     }
     
     // MARK: - Logout
@@ -101,7 +100,7 @@ final class AuthRepository: AuthRepositoryProtocol {
             path: "/auth/invite/generate/",
             method: .post
         )
-        return response.inviteCode
+        return response.code
     }
     
     // MARK: - Refresh Tokens
