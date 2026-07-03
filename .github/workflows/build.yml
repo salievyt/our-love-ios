@@ -19,11 +19,29 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_16.4.app
           xcodebuild -version
 
-      - name: Setup Simulator
+      - name: Create and boot simulator
         run: |
           sudo xcodebuild -runFirstLaunch
           sleep 30
+          
+          # List available runtimes
+          xcrun simctl list runtimes available
+          
+          # Create a simulator device
+          SIM_UDID=$(xcrun simctl create "TestSim" \
+            "com.apple.CoreSimulator.SimDeviceType.iPhone-16" \
+            "com.apple.CoreSimulator.SimRuntime.iOS-18-4" 2>/dev/null || \
+            xcrun simctl list devices available | grep -o '[a-f0-9-]*' | head -1)
+          
+          # If creation failed, list available simulators
           xcrun simctl list devices available
+          
+          # Boot the simulator
+          xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          sleep 10
+          
+          # List booted devices
+          xcrun simctl list devices booted
 
       - name: Build
         run: |
